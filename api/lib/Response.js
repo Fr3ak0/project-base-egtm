@@ -1,3 +1,5 @@
+const _enum = require("../config/enum");
+const CustomError = require("../lib/Error");
 class Response {
   constructor() {}
 
@@ -8,12 +10,22 @@ class Response {
     };
   }
 
-  static errorResponse(code, message) {
+  static errorResponse(error) {
+    console.error("Error:", error);
+    if (error instanceof CustomError) {
+      return {
+        code: error.code,
+        error: {
+          message: error.message,
+          description: error.description,
+        },
+      };
+    }
     return {
-      code,
+      code: _enum.HTTP_CODES.INT_SERVER_ERROR,
       error: {
-        message: error.message,
-        description: error.description,
+        message: "Unkown Error",
+        description: error.message,
       },
     };
   }
